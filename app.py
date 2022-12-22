@@ -4,9 +4,10 @@ from flask import request
 import requests,io
 
 app = Flask(__name__)
-@app.route('/api', methods=['GET'])
+@app.route('/api', methods=['POST'])
 
 def handle_request():
+    print(request.json)
     data = request.json
     token = data.get('token')
     if token is None:
