@@ -1,13 +1,12 @@
-import PyPDF2
+import pypdfium2 as pdfium
 from flask import Flask
 from flask import request
 import requests,io
 
 app = Flask(__name__)
-@app.route('/api', methods=['POST'])
+@app.route('/api', methods=['GET'])
 
 def handle_request():
-    print(request.json)
     data = request.json
     token = data.get('token')
     if token is None:
@@ -25,12 +24,23 @@ def parser(link):
 
 # Read the PDF file
         # Create a PDF object
-    pdf = PyPDF2.PdfFileReader(io.BytesIO(response.content))
+    pdf = pdfium.PdfDocument(io.BytesIO(response.content))
+    version = pdf.get_version()  # get the PDF standard version
+    n_pages = len(pdf) 
+    # Load a text page helper
+    #page = pdf[0]  # or pdf.get_page(0)
+    text_all=""
+    for page in pdf:
+        # Get page dimensions in PDF canvas units (1pt->1/72in by default)
+        width, height = page.get_size()
+        # Set the absolute page rotation to 90° clockwise
+        page.set_rotation(90)
 
-    # Iterate over every page
-    for page in range(pdf.getNumPages()):
-    # Extract the text from the page
-        text += pdf.getPage(page).extractText()
+        textpage = page.get_textpage()
+
+
+        # Extract text from the whole page
+        text_all += textpage.get_text_range()
 
         # Print the text
     return text
