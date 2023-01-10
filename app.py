@@ -43,7 +43,7 @@ def parser(link):
         text_all += textpage.get_text_range()
 
         # Print the text
-    return text
+    return text_all
 
 if __name__ == '__main__':
     app.run(debug=False)
